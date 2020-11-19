@@ -1,0 +1,11 @@
+#!/bin/bash
+if [ $1 ]
+  then
+    cp /etc/apache2/sites-available/example.com.conf /etc/apache2/sites-available/null.conf
+    echo -n > /etc/apache2/sites-available/$1.conf
+    sed -e s/example.com/$1/ /etc/apache2/sites-available/null.conf >> /etc/apache2/sites-available/$1.conf
+    a2ensite $1.conf
+    server restart
+    sed -ie '/localhost$/a 127.0.0.1       '$1 /etc/hosts
+    echo "Wery nice :)"
+fi

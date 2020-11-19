@@ -1,0 +1,16 @@
+#!/bin/bash
+if [ $1 == "start" ]
+  then
+    service apache2 start
+    service mysql start
+elif [ $1 == "restart" ]
+  then
+    service apache2 stop
+    service mysql stop
+    service mysql start
+    service apache2 start
+elif [ $1 == "stop" ]
+  then
+    service apache2 stop
+    service mysql stop
+fi
