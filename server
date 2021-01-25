@@ -1,16 +1,30 @@
 #!/bin/bash
+function status {
+  $1
+  if [ $? == "0" ]
+    then
+      echo echo $2 " => OK"
+    else
+      echo echo $(( $2 )) " => error"
+      exit 1
+  fi
+}
+function stop {
+  $(status "service apache2 stop" "apache stop")
+  $(status "service mysql stop" "mysql stop")
+}
+function start {
+  $(status "service mysql start" "mysql start")
+  $(status "service apache2 start" "apache start")
+}
 if [ $1 == "start" ]
   then
-    service apache2 start
-    service mysql start
+    start
 elif [ $1 == "restart" ]
   then
-    service apache2 stop
-    service mysql stop
-    service mysql start
-    service apache2 start
+    stop
+    start
 elif [ $1 == "stop" ]
   then
-    service apache2 stop
-    service mysql stop
+    stop
 fi
