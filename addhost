@@ -1,6 +1,27 @@
 #!/bin/bash
 if [ $1 ]
   then
+    echo -n > ~/.config/psm/null.cnf
+    sed -e s/example.com/$1/ ~/.config/psm/example.cnf >> ~/.config/psm/null.cnf
+
+    openssl req -config ~/.config/psm/null.cnf -new -newkey rsa:2048 -nodes -out $1.csr  -keyout $1.key
+    cp $1.key{,.orig}
+    openssl rsa -in $1.key.orig -out $1.key
+    rm $1.key.orig
+    # sleep 1s
+    chmod 777 $1.key
+    # ls -l
+    openssl x509 -signkey $1.key -in $1.csr -req -days 365 -out $1.crt
+    sudo cp $1.csr /etc/ssl/certs/
+    sudo cp $1.crt /etc/ssl/certs/
+    sudo cp $1.key /etc/ssl/private/
+    rm $1.csr
+    rm $1.crt
+    rm $1.key
+    # sudo chmod 0600 /etc/ssl/private/$1.key
+    rm ~/.config/psm/null.cnf
+
+
     cp /etc/apache2/sites-available/example.com.conf /etc/apache2/sites-available/null.conf
     echo -n > /etc/apache2/sites-available/$1.conf
     sed -e s/example.com/$1/ /etc/apache2/sites-available/null.conf >> /etc/apache2/sites-available/$1.conf
